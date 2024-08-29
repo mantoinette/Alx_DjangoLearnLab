@@ -41,7 +41,3 @@ def user_register(request):
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
-
-def list_books(request):
-    # Your view logic here
-    return render(request, 'relationship_app/list_books.html')
