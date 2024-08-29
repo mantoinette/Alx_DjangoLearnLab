@@ -3,18 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.views.generic.detail import DetailView
-from .models import Book, Library  # Ensure this import is correct
-from django.contrib.auth import login
-
-def book_list(request):
-    """Retrieves all books and renders a template displaying the list."""
-    books = Book.objects.all()  # Fetch all book instances from the database
-    context = {'book_list': books}
-    return render(request, 'relationship_app/list_books.html', context)
-
-class LibraryDetailView(DetailView):
-    model = Library
-    template_name = 'relationship_app/library_detail.html'
+from .models import Book, Library
 
 def user_login(request):
     if request.method == 'POST':
@@ -42,6 +31,12 @@ def user_register(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-def list_books(request):
-    # Your view logic here
-    return render(request, 'relationship_app/list_books.html')
+def book_list(request):
+    """Retrieves all books and renders a template displaying the list."""
+    books = Book.objects.all()  # Fetch all book instances from the database
+    context = {'book_list': books}
+    return render(request, 'relationship_app/list_books.html', context)
+
+class LibraryDetailView(DetailView):
+    model = Library
+    template_name = 'relationship_app/library_detail.html'
