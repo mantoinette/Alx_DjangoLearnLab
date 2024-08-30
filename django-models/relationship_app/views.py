@@ -3,10 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.views.generic.detail import DetailView
-from .models import Book, Library  # Ensure this import is correct
-from django.contrib.auth.decorators import user_passes_test
-
-# Existing Views
+from .models import Book, Library
+from django.contrib.auth.decorators import user_passes_test  # Import this
 
 def book_list(request):
     books = Book.objects.all()
