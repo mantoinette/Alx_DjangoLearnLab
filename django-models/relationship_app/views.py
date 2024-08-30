@@ -7,8 +7,7 @@ from .models import Book, Library  # Ensure this import is correct
 from django.contrib.auth import login
 
 def book_list(request):
-    """Retrieves all books and renders a template displaying the list."""
-    books = Book.objects.all()  # Fetch all book instances from the database
+    books = Book.objects.all()
     context = {'book_list': books}
     return render(request, 'relationship_app/list_books.html', context)
 
@@ -22,7 +21,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('list_books')  # Adjust redirect as needed
+            return redirect('list_books')
     else:
         form = AuthenticationForm()
     return render(request, 'relationship_app/login.html', {'form': form})
