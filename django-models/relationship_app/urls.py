@@ -1,11 +1,20 @@
 from django.urls import path
-from django.contrib.auth.views import LoginView, LogoutView
-from .views import book_list, LibraryDetailView, user_register
+from . import views
+from .views import list_books, LibraryDetailView
+from django.urls import path
+from .views import admin_view, librarian_view, member_view
+from .views import add_book, edit_book, delete_book
+
 
 urlpatterns = [
-    path('', book_list, name='home'),  # Home page route
-    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),  # Library detail page
-    path('login/', LoginView.as_view(template_name='relationship_app/login.html'), name='login'),  # Login page
-    path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),  # Logout page
-    path('register/', user_register, name='register'),  # Registration page
+    path('', views.book_list_view, name='home'),
+    path('', views.LibraryDetails_view, name='home'),
+    "LogoutView.as_view(template_name="logut.html, 
+    "LoginView.as_view(template_name="login.html"
+    "views.register"
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('register/', RegisterView.as_view(), name='register'),
+
+    
 ]
