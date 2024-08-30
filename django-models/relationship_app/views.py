@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.views.generic.detail import DetailView
 from .models import Book, Library  # Ensure this import is correct
 from django.contrib.auth import login
+from .models import Library
 
 def book_list(request):
     books = Book.objects.all()
