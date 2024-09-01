@@ -12,7 +12,11 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
-    path('admin/', admin_view, name='admin_view'),
+     path('admin/', admin_view, name='admin_view'),
+    
+    # URL for Librarian view
     path('librarian/', librarian_view, name='librarian_view'),
+    
+    # URL for Member view
     path('member/', member_view, name='member_view'),
 ]
