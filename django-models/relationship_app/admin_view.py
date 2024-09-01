@@ -1,9 +1,11 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
-
-def is_admin(user):
-    return user.userprofile.role == 'Admin'
-
-@user_passes_test(is_admin)
-def admin_view(request):
-    return render(request, 'admin_view.html')
+<!-- templates/relationship_app/admin_view.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin View</title>
+</head>
+<body>
+    <h1>Welcome, Admin!</h1>
+    <!-- Admin-specific content -->
+</body>
+</html>
