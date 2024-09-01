@@ -41,8 +41,7 @@ def user_register(request):
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-# Role-Based Access Control Views
-
+# Role check functions
 def is_admin(user):
     return user.userprofile.role == 'Admin'
 
@@ -52,6 +51,7 @@ def is_librarian(user):
 def is_member(user):
     return user.userprofile.role == 'Member'
 
+# Views with role checks
 @user_passes_test(is_admin)
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
