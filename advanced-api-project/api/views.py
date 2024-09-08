@@ -8,6 +8,7 @@ from rest_framework import generics, filters
 from .models import Book
 from .serializers import BookSerializer
 from .filters import BookFilter
+from django_filters import rest_framework
 
 # ListView: Retrieve all books
 class BookListView(generics.ListCreateAPIView):
