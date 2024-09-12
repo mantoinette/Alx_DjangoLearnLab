@@ -1,4 +1,8 @@
 {% extends "blog/base.html" %}  <!-- Inherit from the base template -->
+{% load static %}
+<!-- Include external CSS -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+
 {% block content %}
   <h2>Login</h2>
   <!-- Form for user login -->
