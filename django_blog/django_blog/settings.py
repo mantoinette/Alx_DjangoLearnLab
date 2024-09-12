@@ -77,10 +77,15 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',  # Name of your MySQL database
+        'USER': 'root',  # Default MySQL user for XAMPP
+        'PASSWORD': '',  # Leave blank if you're not using a password (default for XAMPP)
+        'HOST': 'localhost',
+        'PORT': '3306',  # MySQL default port in XAMPP
     }
 }
+
 
 
 # Password validation
