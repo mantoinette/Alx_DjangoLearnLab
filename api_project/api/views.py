@@ -1,12 +1,11 @@
-
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework import viewsets
+from rest_framework import generics
 from .models import Book
 from .serializers import BookSerializer
-from .permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 
-class BookViewSet(viewsets.ModelViewSet):
+class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated]
+
+
