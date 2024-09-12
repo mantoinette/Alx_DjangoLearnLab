@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os  # For handling static and template directories
+import os
+from dotenv import load_dotenv  # Import for loading environment variables
+
+# Load environment variables from a .env file (ensure to have a .env file in your root directory)
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s0f1(#_+5q3mguy1s)g=wh^1&ni&#t=d#_ye#cb4*2v*4mghcr'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-secret-key')  # Use an environment variable
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'  # Toggle DEBUG based on environment variable
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')  # Fetch allowed hosts from environment
 
 
 # Application definition
@@ -78,14 +82,13 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_db',  # Name of your MySQL database
-        'USER': 'root',  # Default MySQL user for XAMPP
-        'PASSWORD': '',  # Leave blank if you're not using a password (default for XAMPP)
-        'HOST': 'localhost',
-        'PORT': '3306',  # MySQL default port in XAMPP
+        'NAME': os.getenv('MYSQL_DATABASE', 'django_db'),  # Fetch DB name from environment variables
+        'USER': os.getenv('MYSQL_USER', 'root'),  # Fetch DB user
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),  # Fetch DB password from environment variables
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),  # Fetch DB host
+        'PORT': os.getenv('MYSQL_PORT', '3306'),  # Default MySQL port
     }
 }
-
 
 
 # Password validation
@@ -131,6 +134,10 @@ STATICFILES_DIRS = [
 
 # Path for collected static files (useful in production)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files (for user-uploaded content such as profile photos)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Default primary key field type
