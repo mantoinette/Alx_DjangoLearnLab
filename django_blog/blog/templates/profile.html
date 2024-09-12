@@ -1,0 +1,9 @@
+{% extends "blog/base.html" %}  <!-- Inherit from the base template -->
+{% block content %}
+  <h2>Profile</h2>
+  <!-- Display the current user's information -->
+  <p>Welcome, {{ user.username }}</p>  <!-- Show username -->
+  <p>Email: {{ user.email }}</p>  <!-- Show email -->
+  <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>  <!-- Logout button -->
+  <a href="{% url 'profile_update' %}" class="btn btn-primary">Update Profile</a>  <!-- Link to update profile -->
+{% endblock %}

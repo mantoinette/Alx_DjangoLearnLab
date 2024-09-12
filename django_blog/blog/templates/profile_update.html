@@ -1,0 +1,10 @@
+{% extends "blog/base.html" %}  <!-- Inherit from the base template -->
+{% block content %}
+  <h2>Update Profile</h2>
+  <!-- Form for updating profile details -->
+  <form method="POST">
+    {% csrf_token %}  <!-- Include CSRF token for security -->
+    {{ form.as_p }}  <!-- Render the form fields -->
+    <button type="submit" class="btn btn-primary">Update</button>  <!-- Submit button -->
+  </form>
+{% endblock %}
