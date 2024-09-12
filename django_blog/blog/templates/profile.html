@@ -1,4 +1,7 @@
 {% extends "blog/base.html" %}  <!-- Inherit from the base template -->
+{% load static %}
+<!-- Include external CSS -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}"> 
 {% block content %}
   <h2>Profile</h2>
   <!-- Display the current user's information -->
