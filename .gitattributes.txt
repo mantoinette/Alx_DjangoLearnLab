@@ -1,0 +1,5 @@
+* text=auto
+* text=auto
+*.po text eol=lf
+*.sh text eol=lf
+text=auto
