@@ -1,10 +1,11 @@
-{% extends "blog/base.html" %}  <!-- Inherit from the base template -->
-{% block content %}
-  <h2>Update Profile</h2>
-  <!-- Form for updating profile details -->
-  <form method="POST">
-    {% csrf_token %}  <!-- Include CSRF token for security -->
-    {{ form.as_p }}  <!-- Render the form fields -->
-    <button type="submit" class="btn btn-primary">Update</button>  <!-- Submit button -->
-  </form>
-{% endblock %}
+@login_required  # Ensure the user is logged in
+def profile_update(request):
+    if request.method == 'POST':  # Check if the request is a POST request
+        form = UserUpdateForm(request.POST, instance=request.user)  # Update user info
+        if form.is_valid():
+            form.save()  # Save the updated data
+            messages.success(request, 'Your profile has been updated!')  # Success message
+            return redirect('profile')  # Redirect to profile page
+    else:
+        form = UserUpdateForm(instance=request.user)  # Prefill form with current user data
+    return render(request, 'blog/profile_update.html', {'form': form})
