@@ -1,21 +1,16 @@
-
+{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/css/styles.css' %}">
+
   <h2>Login</h2>
   
   <form method="POST">
     {% csrf_token %}
-    <div>
-      {{ form.as_p }}
-    </div>
+    {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
-  
-  {% if form.non_field_errors %}
-    <div class="error">
-      {{ form.non_field_errors }}
-    </div>
-  {% endif %}
   
   <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
 {% endblock %}

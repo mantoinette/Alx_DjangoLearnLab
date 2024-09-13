@@ -1,17 +1,16 @@
-<<<<<<< HEAD
 {% extends 'base.html' %}
-=======
-{% extends "blog/base.html" %}  <!-- Inherit from the base template -->
 {% load static %}
-<!-- Include external CSS -->
-<link rel="stylesheet" href="{% static 'css/style.css' %}"> 
->>>>>>> 8931b2068dd0766060bc82c2a9f1f7ee13dafd5e
 
 {% block content %}
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/css/style.css' %}">
+
   <h2>Register</h2>
+  
   <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Register</button>
   </form>
+
+  <p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
 {% endblock %}
