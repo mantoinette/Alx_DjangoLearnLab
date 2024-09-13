@@ -20,7 +20,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -28,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-secret-key')  # Use an environment variable
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'  # Toggle DEBUG based on environment variable
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'  # Toggle DEBUG based on environment variable
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')  # Fetch allowed hosts from environment
 
@@ -127,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Specify static file directory
+# Specify static file directories
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'blog', 'static'),  # Add the static files directory
 ]
