@@ -1,10 +1,21 @@
-{% extends "blog/base.html" %}  <!-- Inherit from the base template -->
+{% extends 'base.html' %}
+
 {% block content %}
   <h2>Login</h2>
-  <!-- Form for user login -->
+  
   <form method="POST">
-    {% csrf_token %}  <!-- Include CSRF token for security -->
-    {{ form.as_p }}  <!-- Render the form fields -->
-    <button type="submit" class="btn btn-primary">Login</button>  <!-- Submit button -->
+    {% csrf_token %}
+    <div>
+      {{ form.as_p }}
+    </div>
+    <button type="submit">Login</button>
   </form>
+  
+  {% if form.non_field_errors %}
+    <div class="error">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+  
+  <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
 {% endblock %}
