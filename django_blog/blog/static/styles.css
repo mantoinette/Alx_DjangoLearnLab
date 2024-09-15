@@ -1,81 +1,32 @@
-/* blog/static/blog/css/styles.css */
-
-/* General styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-/* Container for centering the form */
-.container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* Heading styles */
-h2 {
+    background-color: #f0f0f0;
+  }
+  
+  h2 {
     color: #333;
-    margin-bottom: 20px;
     text-align: center;
-}
-
-/* Form styles */
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-form label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-form input, form button {
-    padding: 10px;
-    margin-bottom: 15px;
+  }
+  
+  form {
+    background-color: white;
+    padding: 20px;
+    margin: 0 auto;
+    width: 300px;
     border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-form input:focus {
-    border-color: #007BFF;
-    outline: none;
-}
-
-form button {
-    background-color: #007BFF;
-    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
     border: none;
+    color: white;
     cursor: pointer;
-}
-
-form button:hover {
+  }
+  
+  button:hover {
     background-color: #0056b3;
-}
-
-/* Link styles */
-p a {
-    color: #007BFF;
-    text-decoration: none;
-}
-
-p a:hover {
-    text-decoration: underline;
-}
-
-/* Error and success messages */
-.error-message, .success-message {
-    color: #d9534f;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.success-message {
-    color: #5bc0de;
-}
+  }
+  
