@@ -1,15 +1,40 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import UserEditForm
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django import forms
+from django.contrib.auth.views import LoginView, LogoutView
 
-@login_required
-def edit_profile(request):
+
+# Custom User Registration Form
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+# Registration View
+def register(request):
     if request.method == 'POST':
-        form = UserEditForm(request.POST, instance=request.user)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('profile')  # Redirect to the profile view after saving changes
+            messages.success(request, 'Registration successful. Please log in.')
+            return redirect('login')
     else:
-        form = UserEditForm(instance=request.user)
-    
-    return render(request, 'blog/edit_profile.html', {'form': form})
+        form = CustomUserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+# Profile View
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user = request.user
+        user.email = request.POST['email']
+        user.save()
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('profile')
+    return render(request, 'registration/profile.html')
