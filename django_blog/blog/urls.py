@@ -1,10 +1,15 @@
 from django.urls import path
-from . import views
-from django.contrib.auth import views as auth_views
+from .views import LoginView, register, LogoutView, profile, edit_profile, CreateView, UpdateView, DetailView, DeleteView, ListView
 
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('register/', views.register, name='register'),
-    path('profile/', views.profile, name='profile'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('register/', register, name='register'),
+    path('profile/', profile, name='profile'),
+    path('edit_profile/', edit_profile, name='edit_profile' ),
+    path('post/new/', CreateView.as_view(), name='new'),
+    path('posts/', ListView.as_view(), name='posts'),
+    path('post/<int:pk>', DetailView.as_view(), name='detail'),
+    path('post/<int:pk>/delete/', DeleteView.as_view(), name='delete'),
+    path('post/<int:pk>/update/', UpdateView.as_view(), name='update'),
+
 ]
