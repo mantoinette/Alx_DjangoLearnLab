@@ -41,14 +41,18 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 
 
-
+ # blog/views.py (Update profile view)
 @login_required
 def profile(request):
-    return render(request, 'profile.html', {'user': request.user})
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=request.user)
+    return render(request, 'registration/profile.html', {'form': form})
 
-class ListView(ListView):
-    model = Post
-    template_name = 'post_list.html'
 
 class DetailView(DetailView):
     model = Post
