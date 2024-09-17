@@ -17,7 +17,8 @@ class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Set when the comment is first created
+    updated_at = models.DateTimeField(auto_now=True)      # Updates every time the comment is saved
 
     def __str__(self):
         return self.content
@@ -26,8 +27,8 @@ class CustomUser(AbstractUser):
     username = models.CharField(unique=True, max_length=100)
     email = None
      
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
 
-    def __str__(self):
-        return self.name
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255)
+   
