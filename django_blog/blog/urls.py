@@ -1,18 +1,25 @@
 from django.urls import path
-from . import views
 from django.contrib.auth import views as auth_views
+from . import views
+from .views import (
+    PostListView,
+    PostDetailView,
+    PostCreateView,
+    PostUpdateView,
+    PostDeleteView
+)
 
 urlpatterns = [
+    # Authentication URLs
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logged_out.html'), name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
-     path('post/new/', views.PostCreateView.as_view(), name='post-create'),
 
-    # Update an existing post
-    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
-
-    # Delete an existing post
-    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
-
+    # Post URLs
+    path('posts/', PostListView.as_view(), name='posts'),
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
+    path('post/new/', PostCreateView.as_view(), name='post-create'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
 ]
