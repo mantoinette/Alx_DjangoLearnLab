@@ -9,11 +9,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
 
-
 # Serializer for user registration
 class RegisterSerializer(serializers.ModelSerializer):
-    # Add a password confirmation field
-    confirm_password = serializers.CharField(write_only=True)
+    # Use serializers.CharField for password and confirm_password
+    password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = CustomUser
@@ -23,12 +23,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             'confirm_password': {'write_only': True},
         }
 
-    # Overriding the create method to include user and token creation
     def create(self, validated_data):
         password = validated_data.pop('password')
         confirm_password = validated_data.pop('confirm_password')
 
-        # Check if passwords match
+        # Ensure the passwords match
         if password != confirm_password:
             raise serializers.ValidationError({"password": "Passwords must match."})
 
@@ -39,7 +38,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=password
         )
 
-        # Create an authentication token for the user
+        # Create the token for the user
         Token.objects.create(user=user)
         
         return user
