@@ -13,6 +13,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
 from .models import Comment
+from django.db.models import Q
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField()
@@ -137,9 +138,9 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user == post.author
     class CommentCreateView(CreateView):
-    model = Comment
-    template_name = 'comment_create.html'
-    form_class = CommentForm
+     model = Comment
+     template_name = 'comment_create.html'
+     form_class = CommentForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -152,5 +153,18 @@ class CommentUpdateView(UpdateView):
 class CommentDeleteView(DeleteView):
     model = Comment
     template_name = 'comment_delete.html'
+
+def search_posts(request):
+    query = request.GET.get('q')
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    else:
+        posts = Post.objects.none()
+
+    return render(request, 'blog/search_results.html', {'posts': posts})
 
 
