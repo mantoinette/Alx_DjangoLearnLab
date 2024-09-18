@@ -5,19 +5,15 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import CustomUser, Post
-from .forms import ProfileForm, CreatePostForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
 from .models import Comment
-from django.db.models import Q
 
+# User Registration View
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField()
-    
+
     class Meta:
         model = CustomUser
         fields = ['email',]
@@ -31,10 +27,12 @@ def register(request):
     else:
         form = RegistrationForm()
     return render(request, 'register.html', {'form': form})
-    
-class LoginView(LoginView):
+
+# User Login View
+class CustomLoginView(LoginView):
     template_name = 'login.html'
 
+# Edit Profile View
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
@@ -46,8 +44,7 @@ def edit_profile(request):
         form = ProfileForm(instance=request.user.profile)
     return render(request, 'edit_profile.html', {'form': form})
 
-
- # blog/views.py (Update profile view)
+# Profile View
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -59,112 +56,73 @@ def profile(request):
         form = ProfileForm(instance=request.user)
     return render(request, 'registration/profile.html', {'form': form})
 
-
-class DetailView(DetailView):
+# Post List View
+class PostListView(ListView):
     model = Post
-    template_name = 'post_view.html'
-    context_object_name = 'post'
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    ordering = ['-date_posted']  # Display latest posts first
 
-class CreateView(LoginRequiredMixin, CreateView):
+# Post Detail View
+class PostDetailView(DetailView):
     model = Post
-    template_name = 'post_create.html'
+    template_name = 'blog/post_detail.html'
+
+# Post Create View
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    template_name = 'blog/post_form.html'
     form_class = CreatePostForm
-    success_url = '/list/'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-    
 
-class UpdateView(UpdateView):
-    model = Post
-    template_name = 'post_edit.html'
-
-class DeleteView(UserPassesTestMixin, DeleteView):
-    model = Post
-    template_name = 'post_delete.html'
-    success_url = 'posts/'
-    context_object_name = 'post'
-
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
-
-
-class PostListView(ListView):
-    model = Post
-    template_name = 'blog/post_list.html'  # Template for displaying all posts
-    context_object_name = 'posts'
-    ordering = ['-date_posted']  # Display latest posts first
-
-# Display a single blog post
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'  # Template for displaying a single post
-
-# Allow users to create a new post
-class PostCreateView(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['title', 'content']
-    template_name = 'blog/post_form.html'
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user  # Set the author to the logged-in user
-        return super().form_valid(form)
-
-# Allow post authors to update their posts
+# Post Update View
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
     template_name = 'blog/post_form.html'
+    fields = ['title', 'content']
 
     def form_valid(self, form):
-        form.instance.author = self.request.user  # Ensure the author is the logged-in user
+        form.instance.author = self.request.user
         return super().form_valid(form)
 
-    # Ensure only the post's author can update it
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
 
-# Allow post authors to delete their posts
+# Post Delete View
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    success_url = reverse_lazy('post-list')  # Redirect to the post list after deletion
+    success_url = reverse_lazy('post-list')
     template_name = 'blog/post_confirm_delete.html'
 
-    # Ensure only the post's author can delete it
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
     class CommentCreateView(CreateView):
-     model = Comment
-     template_name = 'comment_create.html'
-     form_class = CommentForm
+    model = Comment
+    template_name = 'comment_create.html'
+    form_class = CommentForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-class CommentUpdateView(UpdateView):
+# Comment Update View
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
-    template_name = "comment_update.html"
+    template_name = 'blog/comment_update.html'
+    fields = ['content']
 
-class CommentDeleteView(DeleteView):
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+# Comment Delete View
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
     template_name = 'comment_delete.html'
-
-def search_posts(request):
-    query = request.GET.get('q')
-    if query:
-        posts = Post.objects.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(tags__name__icontains=query)
-        ).distinct()
-    else:
-        posts = Post.objects.none()
-
-    return render(request, 'blog/search_results.html', {'posts': posts})
 
 
