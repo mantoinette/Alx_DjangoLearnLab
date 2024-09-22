@@ -1,7 +1,7 @@
 from rest_framework import status, permissions, viewsets, filters
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404  # Ensure this line is present
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
@@ -10,11 +10,10 @@ from .serializers import PostSerializer, CommentSerializer
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    # Use get_object_or_404 to retrieve the post
     post = get_object_or_404(Post, pk=pk)  # This line is present
     user = request.user
 
-    # Use get_or_create to check or create a like
+    # Ensure this line is present
     like, created = Like.objects.get_or_create(user=user, post=post)  # This line is present
 
     if created:  # If a new like was created
