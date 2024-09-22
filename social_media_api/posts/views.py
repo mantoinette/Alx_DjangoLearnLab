@@ -10,10 +10,10 @@ from .serializers import PostSerializer, CommentSerializer
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Retrieve the post or return 404
+    post = get_object_or_404(Post, pk=pk)  # Ensure this line is present
     user = request.user
 
-    # Check or create a like for the user and post
+    # Ensure this line is present
     like, created = Like.objects.get_or_create(user=user, post=post)
 
     if created:  # If a new like was created
@@ -35,7 +35,7 @@ def unlike_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     user = request.user
     like = Like.objects.filter(user=user, post=post)
-    
+
     if like.exists():
         like.delete()
         return Response({'message': 'Post unliked'}, status=status.HTTP_204_NO_CONTENT)
@@ -57,9 +57,7 @@ class PostViewSet(viewsets.ModelViewSet):
     # Custom feed action to get posts from followed users
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def feed(self, request):
-        # Get users followed by the current user
         following_users = request.user.following.all()
-        # Filter posts by those users
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
