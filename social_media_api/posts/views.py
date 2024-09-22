@@ -2,7 +2,6 @@ from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-
 from .models import Post, Like
 from .serializers import PostSerializer, CommentSerializer
 from notifications.models import Notification  # Assuming Notification is in the notifications app
@@ -10,12 +9,14 @@ from notifications.models import Notification  # Assuming Notification is in the
 # View for liking a post
 @api_view(['POST'])
 def like_post(request, pk):
+    # Ensure post exists, otherwise return 404
     post = get_object_or_404(Post, pk=pk)
     user = request.user
-    # Check if the post is already liked
+    # Use get_or_create to avoid duplicate likes
     like, created = Like.objects.get_or_create(user=user, post=post)
+    
     if created:
-        # Create a notification if the post is liked for the first time
+        # Generate notification if a new like is created
         Notification.objects.create(
             recipient=post.author,  # The author of the post
             actor=user,
@@ -29,10 +30,14 @@ def like_post(request, pk):
 # View for unliking a post
 @api_view(['POST'])
 def unlike_post(request, pk):
+    # Ensure post exists, otherwise return 404
     post = get_object_or_404(Post, pk=pk)
     user = request.user
+    # Filter for the like object
     like = Like.objects.filter(user=user, post=post)
+    
     if like.exists():
+        # If the like exists, delete it
         like.delete()
         return Response({'message': 'Post unliked'}, status=status.HTTP_204_NO_CONTENT)
     else:
@@ -60,4 +65,4 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
 
-# Define additional viewsets like CommentViewSet here, if necessary.
+# You would also define other viewsets, like CommentViewSet, here if necessary.
