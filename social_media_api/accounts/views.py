@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status, viewsets, permissions
+from rest_framework import status, viewsets, permissions, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -8,15 +8,26 @@ from .serializers import UserSerializer, RegisterSerializer
 
 CustomUser = get_user_model()
 
-# Registration view for creating new users
-class RegisterView(generics.CreateAPIView):
+# Registration view using GenericAPIView
+class RegisterView(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
 
-# Custom token authentication view
-class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            'user_id': user.pk,
+            'username': user.username
+        }, status=status.HTTP_201_CREATED)
+
+# Custom token authentication view using GenericAPIView
+class CustomAuthToken(generics.GenericAPIView):
+    serializer_class = ObtainAuthToken.serializer_class
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
