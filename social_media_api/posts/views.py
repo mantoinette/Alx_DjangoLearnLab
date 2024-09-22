@@ -1,7 +1,6 @@
-from rest_framework import status, viewsets, permissions, filters
+from rest_framework import status, viewsets, permissions, filters, generics  # Added generics import
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
@@ -9,7 +8,8 @@ from .serializers import PostSerializer, CommentSerializer
 # View for liking a post
 @api_view(['POST'])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Ensure post exists
+    # Use generics.get_object_or_404 as required
+    post = generics.get_object_or_404(Post, pk=pk)
     user = request.user
     # Use get_or_create to ensure only one like per user per post
     like, created = Like.objects.get_or_create(user=user, post=post)
@@ -29,7 +29,8 @@ def like_post(request, pk):
 # View for unliking a post
 @api_view(['POST'])
 def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    # Use generics.get_object_or_404 as required
+    post = generics.get_object_or_404(Post, pk=pk)
     user = request.user
     like = Like.objects.filter(user=user, post=post)
     
