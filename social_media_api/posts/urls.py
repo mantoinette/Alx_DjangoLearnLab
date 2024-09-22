@@ -1,5 +1,3 @@
-# posts/urls.py
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import PostViewSet, CommentViewSet, like_post, unlike_post, list_notifications, mark_as_read
@@ -23,6 +21,4 @@ urlpatterns = [
     # Paths for notifications
     path('notifications/', list_notifications, name='list_notifications'),
     path('notifications/<int:pk>/mark-read/', mark_as_read, name='mark_as_read'),
-    path('<int:pk>/like/', views.like_post, name='like_post'),
-    path('<int:pk>/unlike/', views.unlike_post, name='unlike_post'),
 ]
