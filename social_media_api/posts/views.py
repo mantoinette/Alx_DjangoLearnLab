@@ -1,9 +1,38 @@
-from rest_framework import viewsets, permissions, filters
-from rest_framework.response import Response  # Add this import
-from .models import Post, Comment
+
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.decorators import action  # Ensure you import action if not already
 
+# View for liking a post
+@api_view(['POST'])
+def like_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    user = request.user
+    if not post.likes.filter(user=user).exists():
+        Like.objects.create(user=user, post=post)
+        # Create a notification
+        Notification.objects.create(
+            recipient=post.author,  # The author of the post
+            actor=user,
+            verb='liked',
+            target=post
+        )
+        return Response({'message': 'Post liked'}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'error': 'Post already liked'}, status=status.HTTP_400_BAD_REQUEST)
+
+# View for unliking a post
+@api_view(['POST'])
+def unlike_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    user = request.user
+    like = Like.objects.filter(user=user, post=post)
+    if like.exists():
+        like.delete()
+        return Response({'message': 'Post unliked'}, status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response({'error': 'Post not liked yet'}, status=status.HTTP_400_BAD_REQUEST)
+
+# ViewSet for handling posts
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
@@ -24,3 +53,5 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+
+# You would also need to define the CommentViewSet and other necessary views here.
