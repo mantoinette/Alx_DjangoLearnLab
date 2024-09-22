@@ -1,7 +1,7 @@
 from rest_framework import status, permissions, viewsets, filters
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404  # Ensure this line is present
+from django.shortcuts import get_object_or_404
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
