@@ -1,3 +1,4 @@
+
 """
 Django settings for social_media_api project.
 
@@ -158,6 +159,10 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+# XSS protection and iframe clickjacking prevention
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
 
 # Logging setup for production
 LOGGING = {
