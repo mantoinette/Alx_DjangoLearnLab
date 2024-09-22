@@ -11,6 +11,7 @@ def like_post(request, pk):
     # Use generics.get_object_or_404 as required
     post = generics.get_object_or_404(Post, pk=pk)
     user = request.user
+    
     # Use get_or_create to ensure only one like per user per post
     like, created = Like.objects.get_or_create(user=user, post=post)
     
