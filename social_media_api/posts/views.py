@@ -1,15 +1,21 @@
+from rest_framework import viewsets, permissions, filters, status
+from rest_framework.decorators import action, api_view
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
+from .models import Post, Like
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework.decorators import action  # Ensure you import action if not already
+from notifications.models import Notification  # Assuming Notification is in the notifications app
 
 # View for liking a post
 @api_view(['POST'])
 def like_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     user = request.user
-    if not post.likes.filter(user=user).exists():
-        Like.objects.create(user=user, post=post)
-        # Create a notification
+    # Check if the post is already liked
+    like, created = Like.objects.get_or_create(user=user, post=post)
+    if created:
+        # Create a notification if the post is liked for the first time
         Notification.objects.create(
             recipient=post.author,  # The author of the post
             actor=user,
@@ -54,4 +60,4 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
 
-# You would also need to define the CommentViewSet and other necessary views here.
+# Define additional viewsets like CommentViewSet here, if necessary.
