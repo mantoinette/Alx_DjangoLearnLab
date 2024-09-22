@@ -1,5 +1,3 @@
-# posts/views.py
-
 from rest_framework import status, viewsets, permissions, filters
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
@@ -11,10 +9,12 @@ from .serializers import PostSerializer, CommentSerializer
 # View for liking a post
 @api_view(['POST'])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Post, pk=pk)  # Ensure post exists
     user = request.user
-    if not post.likes.filter(user=user).exists():
-        Like.objects.create(user=user, post=post)
+    # Use get_or_create to ensure only one like per user per post
+    like, created = Like.objects.get_or_create(user=user, post=post)
+    
+    if created:  # If like was successfully created (not already existing)
         # Create a notification
         Notification.objects.create(
             recipient=post.author,  # The author of the post
@@ -32,8 +32,9 @@ def unlike_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     user = request.user
     like = Like.objects.filter(user=user, post=post)
+    
     if like.exists():
-        like.delete()
+        like.delete()  # If like exists, delete it
         return Response({'message': 'Post unliked'}, status=status.HTTP_204_NO_CONTENT)
     else:
         return Response({'error': 'Post not liked yet'}, status=status.HTTP_400_BAD_REQUEST)
@@ -59,5 +60,3 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
-
-# You would also need to define the CommentViewSet and other necessary views here.
