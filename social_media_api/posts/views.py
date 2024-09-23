@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
+from django.shortcuts import get_object_or_404
+
 
 # View for liking a post
 @api_view(['POST'])
@@ -26,6 +28,7 @@ def like_post(request, pk):
         return Response({'message': 'Post liked'}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Post already liked'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # View for unliking a post
 @api_view(['POST'])
