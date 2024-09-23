@@ -1,5 +1,5 @@
 from rest_framework import status, permissions, viewsets, filters
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404  # Ensure this line is present
 from posts.models import Post, Like, Comment
@@ -61,3 +61,13 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+
+# ViewSet for handling comments
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all().order_by('-created_at')  # This line includes Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        # Automatically associate the comment with the user making the request
+        serializer.save(author=self.request.user)
