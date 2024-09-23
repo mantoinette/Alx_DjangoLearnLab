@@ -1,7 +1,7 @@
-from rest_framework import status, permissions, viewsets, filters
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework import status, permissions, viewsets, filters, generics
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404  # Ensure this line is present
+# No need to import django.shortcuts.get_object_or_404
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
@@ -10,10 +10,9 @@ from .serializers import PostSerializer, CommentSerializer
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Ensure this line is present
+    post = generics.get_object_or_404(Post, pk=pk)  # Now using generics.get_object_or_404
     user = request.user
 
-    # Ensure this line is present
     like, created = Like.objects.get_or_create(user=user, post=post)  # This line is present
 
     if created:  # If a new like was created
@@ -32,7 +31,7 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Ensure this line is present
+    post = generics.get_object_or_404(Post, pk=pk)  # Now using generics.get_object_or_404
     user = request.user
     like = Like.objects.filter(user=user, post=post)
 
@@ -52,22 +51,4 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # Automatically associate the post with the user making the request
-        serializer.save(author=self.request.user)
-
-    # Custom feed action to get posts from followed users
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
-    def feed(self, request):
-        following_users = request.user.following.all()
-        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
-
-# ViewSet for handling comments
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all().order_by('-created_at')  # This line includes Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        # Automatically associate the comment with the user making the request
         serializer.save(author=self.request.user)
