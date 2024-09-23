@@ -13,7 +13,7 @@ def like_post(request, pk):
     user = request.user
 
     # Ensure Like.objects.get_or_create is used to avoid duplicate likes
-    like, created = Like.objects.get_or_create(user=user, post=post)  # This ensures only one like per user per post
+    like, created = Like.objects.get_or_create(user=user, post=post)  # Ensures only one like per user per post
 
     if created:  # If a new like was created
         # Create a notification for the post author
