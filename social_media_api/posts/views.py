@@ -9,13 +9,14 @@ from .serializers import PostSerializer, CommentSerializer
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = generics.get_object_or_404(Post, pk=pk)  # Using generics.get_object_or_404
+    post = generics.get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
     user = request.user
 
-    like, created = Like.objects.get_or_create(user=user, post=post)  # Check if the user already liked the post
+    # Ensure Like.objects.get_or_create is used to avoid duplicate likes
+    like, created = Like.objects.get_or_create(user=user, post=post)  # This ensures only one like per user per post
 
     if created:  # If a new like was created
-        # Create a notification
+        # Create a notification for the post author
         Notification.objects.create(
             recipient=post.author,
             actor=user,
@@ -30,11 +31,11 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    post = generics.get_object_or_404(Post, pk=pk)  # Using generics.get_object_or_404
+    post = generics.get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
     user = request.user
-    like = Like.objects.filter(user=user, post=post)
+    like = Like.objects.filter(user=user, post=post)  # Find the like
 
-    if like.exists():
+    if like.exists():  # If the like exists, delete it
         like.delete()
         return Response({'message': 'Post unliked'}, status=status.HTTP_204_NO_CONTENT)
     else:
@@ -42,7 +43,7 @@ def unlike_post(request, pk):
 
 # ViewSet for handling posts
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.all().order_by('-created_at')  # Get all posts ordered by creation date
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
