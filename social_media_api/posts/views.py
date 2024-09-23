@@ -1,7 +1,6 @@
-from rest_framework import status, permissions, viewsets, filters
+from rest_framework import status, permissions, viewsets, filters, generics
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404  # Ensure this line is present
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
@@ -10,11 +9,10 @@ from .serializers import PostSerializer, CommentSerializer
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Ensure this line is present
+    post = generics.get_object_or_404(Post, pk=pk)  # Using generics.get_object_or_404
     user = request.user
 
-    # Ensure this line is present
-    like, created = Like.objects.get_or_create(user=user, post=post)  # This line is present
+    like, created = Like.objects.get_or_create(user=user, post=post)  # Check if the user already liked the post
 
     if created:  # If a new like was created
         # Create a notification
@@ -32,7 +30,7 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Ensure this line is present
+    post = generics.get_object_or_404(Post, pk=pk)  # Using generics.get_object_or_404
     user = request.user
     like = Like.objects.filter(user=user, post=post)
 
@@ -64,7 +62,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 # ViewSet for handling comments
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all().order_by('-created_at')  # This line includes Comment.objects.all()
+    queryset = Comment.objects.all().order_by('-created_at')
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
