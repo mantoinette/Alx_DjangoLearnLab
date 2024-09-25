@@ -4,14 +4,14 @@ from rest_framework.response import Response
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404  # Correct import
 
 
 # View for liking a post
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = generics.get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
+    post = get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
     user = request.user
 
     # Ensure Like.objects.get_or_create is used to avoid duplicate likes
@@ -34,7 +34,7 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    post = generics.get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
+    post = get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
     user = request.user
     like = Like.objects.filter(user=user, post=post)  # Find the like
 
