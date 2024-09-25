@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from posts.models import Post, Like, Comment
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
-from django.shortcuts import get_object_or_404
 
 
 # View for liking a post
@@ -15,7 +14,7 @@ def like_post(request, pk):
     user = request.user
 
     # Ensure Like.objects.get_or_create is used to avoid duplicate likes
-    like, created = Like.objects.get_or_create(user=user, post=post)  # Ensures only one like per user per post
+    like, created = Like.objects.get_or_create(user=user, post=post)
 
     if created:  # If a new like was created
         # Create a notification for the post author
@@ -36,7 +35,7 @@ def like_post(request, pk):
 def unlike_post(request, pk):
     post = generics.get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
     user = request.user
-    like = Like.objects.filter(user=user, post=post)  # Find the like
+    like = Like.objects.filter(user=user, post=post)
 
     if like.exists():  # If the like exists, delete it
         like.delete()
@@ -63,6 +62,7 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+
 
 # ViewSet for handling comments
 class CommentViewSet(viewsets.ModelViewSet):
