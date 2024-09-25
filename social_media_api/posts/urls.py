@@ -15,8 +15,8 @@ urlpatterns = [
     path('feed/', PostViewSet.as_view({'get': 'feed'}), name='post-feed'),
     
     # Paths for liking and unliking posts
-    path('posts/<int:pk>/like/', views.like_post, name='like_post'),  # URL pattern for liking a post
-    path('posts/<int:pk>/unlike/', views.unlike_post, name='unlike_post'),
+    path('posts/<int:pk>/like/', like_post, name='like_post'),  # URL pattern for liking a post
+    path('posts/<int:pk>/unlike/', unlike_post, name='unlike_post'),
 
     # Paths for notifications
     path('notifications/', list_notifications, name='list_notifications'),
