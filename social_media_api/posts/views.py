@@ -1,4 +1,4 @@
-from rest_framework import status, permissions, viewsets, filters, generics
+from rest_framework import status, permissions, viewsets, filters
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from posts.models import Post, Like, Comment
@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404  # Correct import
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
+    post = get_object_or_404(Post, pk=pk)  # Correct use of get_object_or_404
     user = request.user
 
     # Ensure Like.objects.get_or_create is used to avoid duplicate likes
@@ -34,7 +34,7 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # Fetch the post by its ID
+    post = get_object_or_404(Post, pk=pk)  # Correct use of get_object_or_404
     user = request.user
     like = Like.objects.filter(user=user, post=post)  # Find the like
 
